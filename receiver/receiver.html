@@ -54,7 +54,7 @@
     if (!token) {
       alert("JWT not found");
     } else {
-      const socket = new WebSocket(`ws://localhost:3000/?token=${token}`);
+      const socket = new WebSocket(`ws://44.203.253.121:3102/?token=${token}`);
 
       socket.onmessage = (event) => {
         const msg = JSON.parse(event.data);

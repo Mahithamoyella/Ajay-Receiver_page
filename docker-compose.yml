@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:15
+    container_name: receiver_postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: admin834
+      POSTGRES_DB: new_employee_db
+    ports:
+      - "5512:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - receiver_net
+
+  backend:
+    build: ./Backend
+    container_name: receiver_backend
+    ports:
+      - "3102:3102"
+    depends_on:
+      - postgres
+    environment:
+      DB_USER: postgres
+      DB_HOST: postgres
+      DB_NAME: new_employee_db
+      DB_PASSWORD: admin834
+      DB_PORT: 5432
+    networks:
+      - receiver_net
+
+  receiver:
+    build: ./receiver
+    container_name: receiver_frontend
+    ports:
+      - "8168:80"
+    depends_on:
+      - backend
+    networks:
+      - receiver_net
+
+networks:
+  receiver_net:
+    driver: bridge
+
